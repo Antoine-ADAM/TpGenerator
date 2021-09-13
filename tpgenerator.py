@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 FIRST_NAME="Antoine"
@@ -35,12 +35,12 @@ if not FIRST_NAME or not LAST_NAME or not LOGIN or not EMAIL:
     raise Exception("Please configure the executable inside! (FIRST_NAME, LAST_NAME, LOGIN, EMAIL)")
 
 print("TpGenerator update check ...")
-lastVersion=urllib.request.urlopen('').read().decode('utf-8')
+lastVersion=urllib.request.urlopen('https://raw.githubusercontent.com/Antoine-ADAM/TpGenerator/main/VERSION').read().decode('utf-8').strip()
 if lastVersion != VERSION:
     print("Version installed => Latest version available")
     print(VERSION,"=>",lastVersion)
     print("This code is made of critical actions, it is very important to carry out the update.")
-    print("Update link: ")
+    print("Update link: https://github.com/Antoine-ADAM/TpGenerator")
     raise Exception("Please update TpGenerator !")
 
 print("Downloading the TP list ...")
