@@ -15,6 +15,7 @@ import urllib.request
 import subprocess
 
 VERSION="0.1"
+HEADER="https://github.com/Antoine-ADAM/TpGenerator "+VERSION
 
 print(""" /$$$$$$$$ /$$$$$$$         /$$$$$$                                                     /$$                        
 |__  $$__/| $$__  $$       /$$__  $$                                                   | $$                        
@@ -31,8 +32,38 @@ print("Description: This program allows to automatically generate the structure,
 print()#print("___________________________________________________________________________________________________________________")
 print()
 
+FILE_CONFIG=".tpgeneratorconfig"
 if not FIRST_NAME or not LAST_NAME or not LOGIN or not EMAIL:
-    raise Exception("Please configure the executable inside! (FIRST_NAME, LAST_NAME, LOGIN, EMAIL)")
+    try:
+        if os.path.exists(FILE_CONFIG):
+            with open(FILE_CONFIG, 'r') as f:
+                res= f.readlines()
+                if len(res)!=6:
+                    raise Exception("file config invalid")
+                print("Config load")
+                (FIRST_NAME,LAST_NAME,LOGIN,EMAIL,PASSWORD_SSH_KEY)=(res[i].strip() for i in range(5))
+                print(f"Your first name: {FIRST_NAME}")
+                print(f"Your last name: {LAST_NAME}")
+                print(f"Your login: {LOGIN}")
+                print(f"Your email: {EMAIL}")
+                print(f"Your password ssh key: {PASSWORD_SSH_KEY}")
+                if not input("Do you want to change the configuration?(no or yes)[no]") in ["","no","NO","n","N"]:
+                    raise Exception("")
+        else:
+            raise Exception("")
+    except Exception:
+        print("set config:")
+        FIRST_NAME=input("Your first name?").capitalize()
+        LAST_NAME=input("Your last name?").upper()
+        tempo=LAST_NAME.lower()+'.'+FIRST_NAME.lower()
+        LOGIN=input(f"Your login?[{tempo}]") or tempo
+        EMAIL=input(f"Your email?[{LOGIN}@epita.fr]") or LOGIN+"@epita.fr"
+        print("Password is optional, if password on ssh key, functionality NOT TESTED")
+        PASSWORD_SSH_KEY=input("Your password ssh key?[]")
+        with open(FILE_CONFIG,'w') as f:
+            f.write(FIRST_NAME+'\n'+LAST_NAME+'\n'+LOGIN+'\n'+EMAIL+'\n'+PASSWORD_SSH_KEY+'\nend')
+            print("Config save")
+print()
 
 print("TpGenerator update check ...")
 lastVersion=urllib.request.urlopen('https://raw.githubusercontent.com/Antoine-ADAM/TpGenerator/main/VERSION').read().decode('utf-8').strip()
@@ -164,9 +195,9 @@ if match:
         resInput=input("Write directory hierarchy ?(yes or y,no or n) [yes] ").strip()
         if resInput in ["","y","yes","Y","YES"]:
             testEmptyRep=os.listdir(pathProject)
-            if len(testEmptyRep)==0 or (len(testEmptyRep)==1 and testEmptyRep[0]==".git") or input("The directory is not empty! If you continue these files may be overwritten: (yes, no) [no]") == "yes":
+            if len(testEmptyRep)==0 or (len(testEmptyRep)==1 and testEmptyRep[0]==".git") or input("The directory is not empty! Do you want to continue?(yes, no) [no]") == "yes":
                 try:
-                    if "AUTHORS" in res:
+                    if "AUTHORS" in res and not os.path.exists(pathProject + "AUTHORS"):
                         res.remove("AUTHORS")
                         with open(pathProject + "AUTHORS", 'w') as f:
                             f.write(FIRST_NAME + '\n' + LAST_NAME + '\n' + LOGIN + '\n' + EMAIL)
@@ -175,28 +206,30 @@ if match:
                         dirE = os.path.dirname(pathProject + e)
                         if not os.path.exists(dirE):
                             os.mkdir(dirE)
-                        with open(pathProject + e, 'w') as f:
-                            if ext == ".h":
-                                f.write("//TpAutoEpitaToulouse " + VERSION + " => " + e + "\n")
-                                v = name.upper().replace(' ', '_')
-                                f.write("\n#ifndef " + v + "\n#define " + v + "\n\n//PROTOTYPE\n\n#endif")
-                            elif name == "main" and ext == ".c":
-                                f.write("//TpAutoEpitaToulouse " + VERSION + " => " + e + "\n")
-                                if name == "main":
-                                    f.write("""#include "stdio.h"
-                
-                    int main(){
-                        //NOT IMPLEMENTED
-                        return 0;
-                    }""")
-                    with open(pathProject + ".gitignore", 'w') as f:
-                        f.write("#TpAutoEpitaToulouse " + VERSION + "\n")
-                        f.write("""*
-                    !*.*
-                    !*/
-                    !README
-                    !AUTHORS
-                    .idea/""")
+                        if not os.path.exists(pathProject + e):
+                            with open(pathProject + e, 'w') as f:
+                                if ext == ".h":
+                                    f.write("// " + HEADER + " => " + e + "\n")
+                                    v = name.upper().replace(' ', '_')
+                                    f.write("\n#ifndef " + v + "_H\n#define " + v + "_H\n\n//PROTOTYPE\n\n#endif")
+                                elif name == "main" and ext == ".c":
+                                    f.write("// " + HEADER + " => " + e + "\n")
+                                    if name == "main":
+                                        f.write("""#include "stdio.h"
+
+int main(){
+    //NOT IMPLEMENTED
+    return 0;
+}""")
+                    if not os.path.exists(pathProject + ".gitignore"):
+                        with open(pathProject + ".gitignore", 'w') as f:
+                            f.write("# "+ HEADER + "\n")
+                            f.write("""*
+!*.*
+!*/
+!README
+!AUTHORS
+.idea/""")
                 except Exception:
                     print("ERROR write files", file=sys.stderr)
     except Exception:
