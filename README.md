@@ -2,6 +2,13 @@
 This program allows to automatically generate the structure, to make a git and push clone.
 
 ### Use:
+
+```bash
+curl https://raw.githubusercontent.com/Antoine-ADAM/TpGenerator/main/tpgenerator.py --output tpgenerator.py && chmod 700 tpgenerator.py && ./tpgenerator.py
+```
+
+or
+
 * Download [tpgenerator.py](https://raw.githubusercontent.com/Antoine-ADAM/TpGenerator/main/tpgenerator.py)
   ```bash
   curl https://raw.githubusercontent.com/Antoine-ADAM/TpGenerator/main/tpgenerator.py --output tpgenerator.py
