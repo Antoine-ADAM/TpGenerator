@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-FIRST_NAME="Antoine"
-LAST_NAME="ADAM"
-LOGIN="antoine.adam"
-EMAIL="antoine.adam@epita.fr"
+FIRST_NAME=""
+LAST_NAME=""
+LOGIN=""
+EMAIL=""
 PASSWORD_SSH_KEY="" #optional, if password on ssh key, functionality NOT TESTED
 
 
