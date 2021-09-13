@@ -9,12 +9,15 @@ curl https://raw.githubusercontent.com/Antoine-ADAM/TpGenerator/main/tpgenerator
 
 or
 
-* Download [tpgenerator.py](https://raw.githubusercontent.com/Antoine-ADAM/TpGenerator/main/tpgenerator.py)
+* Download [tpgenerator.py](https://raw.githubusercontent.com/Antoine-ADAM/TpGenerator/main/tpgenerator.py):
   ```bash
   curl https://raw.githubusercontent.com/Antoine-ADAM/TpGenerator/main/tpgenerator.py --output tpgenerator.py
   ```
-* Modify tpgenerator.py to put your info ![](https://github.com/Antoine-ADAM/TpGenerator/blob/main/img/Line_to_modify.png?raw=true)
-* Open a terminal and run:
+* Change file permissions:
+  ```bash
+  chmod 700 tpgenerator.py
+  ```
+* Run file:
   ```bash
   ./tpgenerator.py
   ```
