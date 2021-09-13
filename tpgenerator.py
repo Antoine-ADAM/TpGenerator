@@ -211,10 +211,10 @@ nCommit=0
 while True:
     print("\n\n")
     input("git add/commit/push ? presses on entry").strip()
-    print(subprocess.run(["git", "-C", pathProject, "add", "--all"], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+    subprocess.run(["git", "-C", pathProject, "add", "--all"])
     valid=False
     while not valid:
-        print(subprocess.run(["git", "-C", pathProject, "status"], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        subprocess.run(["git", "-C", pathProject, "status"])
         print()
         resInput=input('"add <file>" or "rm <file>" or "ok" ? [ok]').strip()
         if resInput == "ok" or resInput == "":
@@ -223,14 +223,14 @@ while True:
             cmd=resInput.split(" ",1)
             if len(cmd) == 2:
                 if cmd[0] == "add":
-                    print(subprocess.run(["git", "-C", pathProject, "add", cmd[1]], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+                    subprocess.run(["git", "-C", pathProject, "add", cmd[1]])
                 elif cmd[0] == "rm":
-                    print(subprocess.run(["git", "-C", pathProject, "rm", "--cached", cmd[1]], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+                    subprocess.run(["git", "-C", pathProject, "rm", "--cached", cmd[1]])
     print()
     resInput=input(f"Commit name: [v{nCommit}]").strip()
     if resInput == "":
         resInput='v'+str(nCommit)
-    print(subprocess.run(["git", "-C", pathProject, "commit", "-m", resInput], stdout=subprocess.PIPE).stdout.decode('utf-8'))
-    print(subprocess.run(["git", "-C", pathProject, "push"],stdout=subprocess.PIPE, input=PASSWORD_SSH_KEY.encode('utf-8')).stdout.decode('utf-8'))
-    print(subprocess.run(["git", "-C", pathProject, "log"], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+    subprocess.run(["git", "-C", pathProject, "commit", "-m", resInput])
+    subprocess.run(["git", "-C", pathProject, "push"], input=PASSWORD_SSH_KEY.encode('utf-8'))
+    subprocess.run(["git", "-C", pathProject, "log"])
     nCommit+=1
