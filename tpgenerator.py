@@ -55,7 +55,7 @@ if not FIRST_NAME or not LAST_NAME or not LOGIN or not EMAIL:
         print("set config:")
         FIRST_NAME=input("Your first name?").capitalize()
         LAST_NAME=input("Your last name?").upper()
-        tempo=LAST_NAME.lower()+'.'+FIRST_NAME.lower()
+        tempo=FIRST_NAME.lower()+'.'+LAST_NAME.lower()
         LOGIN=input(f"Your login?[{tempo}]") or tempo
         EMAIL=input(f"Your email?[{LOGIN}@epita.fr]") or LOGIN+"@epita.fr"
         print("Password is optional, if password on ssh key, functionality NOT TESTED")
