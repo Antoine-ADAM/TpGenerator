@@ -229,6 +229,7 @@ int main(){
 !*/
 !README
 !AUTHORS
+!Makefile
 .idea/""")
                 except Exception:
                     print("ERROR write files", file=sys.stderr)
