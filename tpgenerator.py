@@ -14,7 +14,7 @@ import sys
 import urllib.request
 import subprocess
 
-VERSION="0.1"
+VERSION="0.2"
 HEADER="https://github.com/Antoine-ADAM/TpGenerator "+VERSION
 
 print(""" /$$$$$$$$ /$$$$$$$         /$$$$$$                                                     /$$                        
@@ -125,10 +125,13 @@ pathProject=input(f"Clone location: {basePath}[{simPath}]").strip() or simPath
 if pathProject[len(pathProject)-1]!='/':
     pathProject+='/'
 if not os.path.exists(pathProject):
- os.mkdir(pathProject)
+ os.makedirs(pathProject)
 while True:
     print()
-    resGit=input("With which address to clone(no,<address>)?["+gitAddress+"]").strip()
+    if os.path.exists(pathProject+".git/"):
+        resGit=input("With which address to clone(no,<address>)?[no]").strip() or "no"
+    else:
+        resGit=input("With which address to clone(no,<address>)?["+gitAddress+"]").strip()
     if not resGit:
         resGit = gitAddress
     if resGit == "no" or subprocess.run(["git","clone",resGit,pathProject], input=PASSWORD_SSH_KEY.encode('utf-8')).returncode==0:
@@ -196,6 +199,7 @@ if match:
         if resInput in ["","y","yes","Y","YES"]:
             testEmptyRep=os.listdir(pathProject)
             if len(testEmptyRep)==0 or (len(testEmptyRep)==1 and testEmptyRep[0]==".git") or input("The directory is not empty! Do you want to continue?(yes, no) [no]") == "yes":
+                isAutoCom=input("Do you want to prepopulate the .h, .c and main.c files(yes,no)?[no]") in ["y","Y","YES","yes"]
                 try:
                     if "AUTHORS" in res and not os.path.exists(pathProject + "AUTHORS"):
                         res.remove("AUTHORS")
@@ -205,17 +209,18 @@ if match:
                         (name, ext) = os.path.splitext(os.path.basename(e))
                         dirE = os.path.dirname(pathProject + e)
                         if not os.path.exists(dirE):
-                            os.mkdir(dirE)
+                            os.makedirs(dirE)
                         if not os.path.exists(pathProject + e):
                             with open(pathProject + e, 'w') as f:
-                                if ext == ".h":
-                                    f.write("// " + HEADER + " => " + e + "\n")
-                                    v = name.upper().replace(' ', '_')
-                                    f.write("\n#ifndef " + v + "_H\n#define " + v + "_H\n\n//PROTOTYPE\n\n#endif")
-                                elif name == "main" and ext == ".c":
-                                    f.write("// " + HEADER + " => " + e + "\n")
-                                    if name == "main":
-                                        f.write("""#include "stdio.h"
+                                if isAutoCom:
+                                    if ext == ".h":
+                                        f.write("// " + HEADER + " => " + e + "\n")
+                                        v = name.upper().replace(' ', '_')
+                                        f.write("\n#ifndef " + v + "_H\n#define " + v + "_H\n\n//PROTOTYPE\n\n#endif")
+                                    elif name == "main" and ext == ".c":
+                                        f.write("// " + HEADER + " => " + e + "\n")
+                                        if name == "main":
+                                            f.write("""#include "stdio.h"
 
 int main(){
     //NOT IMPLEMENTED
@@ -231,9 +236,11 @@ int main(){
 !AUTHORS
 !Makefile
 .idea/""")
-                except Exception:
+                except Exception as e:
+                    print(e)
                     print("ERROR write files", file=sys.stderr)
-    except Exception:
+    except Exception as e:
+        print(e)
         print("ERROR parse directory hierarchy !", file=sys.stderr)
 else:
     print("Directory hierarchy not detected !", file=sys.stderr)
