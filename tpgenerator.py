@@ -14,7 +14,7 @@ import sys
 import urllib.request
 import subprocess
 
-VERSION="0.2"
+VERSION="0.3"
 HEADER="https://github.com/Antoine-ADAM/TpGenerator "+VERSION
 
 print(""" /$$$$$$$$ /$$$$$$$         /$$$$$$                                                     /$$                        
@@ -235,7 +235,10 @@ int main(){
 !README
 !AUTHORS
 !Makefile
-.idea/""")
+.idea/
+.out
+.d
+.o""")
                 except Exception as e:
                     print(e)
                     print("ERROR write files", file=sys.stderr)
